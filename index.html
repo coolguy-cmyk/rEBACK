@@ -1,12 +1,219 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Music Autoplay</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>rEBACK</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #0a0a0a;
+  color: #e8e8e8;
+  font-family: 'Space Mono', monospace;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.logo {
+  width: 100px;
+  height: 100px;
+  border-radius: 20px;
+  object-fit: cover;
+  border: 2px solid #333;
+  margin-bottom: 1rem;
+}
+
+@keyframes shake {
+  0%,89%,100% { transform: none; }
+  90% { transform: translateX(-2px) skewX(1deg); }
+  91% { transform: translateX(3px); }
+  92% { transform: translateX(-1px) skewX(-1deg); }
+  93% { transform: none; }
+}
+
+h1 {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 2rem;
+  letter-spacing: 0.3em;
+  color: #fff;
+  animation: shake 2.5s infinite;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.scanline {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 999;
+}
+
+.tagline {
+  color: #888;
+  font-size: 0.78rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.card {
+  background: #141414;
+  border: 0.5px solid #2a2a2a;
+  border-radius: 14px;
+  padding: 1.5rem;
+  max-width: 420px;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.offer-title {
+  font-size: 0.7rem;
+  color: #555;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.75rem;
+}
+
+ul { list-style: none; }
+
+ul li {
+  font-size: 0.78rem;
+  color: #aaa;
+  padding: 5px 0;
+  border-bottom: 0.5px solid #1e1e1e;
+}
+
+ul li:last-child { border-bottom: none; }
+
+ul li::before {
+  content: '> ';
+  color: #4ade80;
+}
+
+.join-btn {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  padding: 1rem;
+  background: #fff;
+  color: #000;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  text-align: center;
+  transition: 0.15s;
+  margin-top: 1rem;
+}
+
+.join-btn:hover {
+  background: #e0e0e0;
+  transform: scale(1.02);
+}
+
+.music-btn {
+  background: #7289da;
+  color: white;
+}
+
+.music-btn:hover {
+  background: #5b6eae;
+}
+
+.discord {
+  font-size: 0.72rem;
+  color: #555;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.blink {
+  animation: blink 1.2s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+</style>
 </head>
+
 <body>
-    <audio autoplay>
-        <source src="your-audio-file.mp3" type="audio/mpeg">
-        Your browser does not support the audio tag.
-    </audio>
+
+<div class="scanline"></div>
+
+<img class="logo" src="square-image.png" alt="logo" onerror="this.style.display='none'">
+
+<h1>r̷🄴🄱🄰🄲🄺<span class="blink">_</span></h1>
+
+<p class="tagline">
+You're a hacker looking for safe hacks? Look no further, we gotcha
+</p>
+
+<div class="card">
+  <p class="offer-title">// WE OFFER</p>
+  <ul>
+    <li>Free executors ranged from 15 to 50 rbx</li>
+    <li>Automated accounts</li>
+    <li>Executors</li>
+    <li>Cheap VIP (200 rbx one time)</li>
+    <li>Nice staff support</li>
+  </ul>
+</div>
+
+<p class="tagline">Now we can hack</p>
+
+<!-- Discord button - redirect removed -->
+<button class="join-btn" onclick="alert('Discord invite: discord.gg/avmFxwSG7M')">
+  Join now
+</button>
+
+<!-- MUSIC TOGGLE -->
+<button class="join-btn music-btn" onclick="toggleMusic()">
+  Play / Stop Music 🎵
+</button>
+
+<!-- hidden audio -->
+<audio id="bgm" loop>
+  <source src="gangnam.mp3" type="audio/mpeg">
+</audio>
+
+<p class="discord">
+discord.gg/<a href="https://discord.gg/avmFxwSG7M" target="_blank">avmFxwSG7M</a>
+</p>
+
+<script>
+let playing = false;
+const audio = document.getElementById("bgm");
+
+function toggleMusic() {
+  if (!playing) {
+    audio.play();
+    playing = true;
+  } else {
+    audio.pause();
+    audio.currentTime = 0;
+    playing = false;
+  }
+}
+</script>
+
 </body>
 </html>
