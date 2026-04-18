@@ -129,15 +129,6 @@ ul li::before {
   transform: scale(1.02);
 }
 
-.music-btn {
-  background: #7289da;
-  color: white;
-}
-
-.music-btn:hover {
-  background: #5b6eae;
-}
-
 .discord {
   font-size: 0.72rem;
   color: #555;
@@ -180,18 +171,12 @@ You're a hacker looking for safe hacks? Look no further, we gotcha
 
 <p class="tagline">Now we can hack</p>
 
-<!-- Discord button - redirect removed -->
-<button class="join-btn" onclick="alert('Discord invite: discord.gg/avmFxwSG7M')">
+<a class="join-btn" href="https://discord.gg/avmFxwSG7M" target="_blank">
   Join now
-</button>
+</a>
 
-<!-- MUSIC TOGGLE -->
-<button class="join-btn music-btn" onclick="toggleMusic()">
-  Play / Stop Music 🎵
-</button>
-
-<!-- hidden audio -->
-<audio id="bgm" loop>
+<!-- hidden audio with autoplay -->
+<audio id="bgm" loop autoplay>
   <source src="gangnam.mp3" type="audio/mpeg">
 </audio>
 
@@ -200,19 +185,10 @@ discord.gg/<a href="https://discord.gg/avmFxwSG7M" target="_blank">avmFxwSG7M</a
 </p>
 
 <script>
-let playing = false;
 const audio = document.getElementById("bgm");
-
-function toggleMusic() {
-  if (!playing) {
-    audio.play();
-    playing = true;
-  } else {
-    audio.pause();
-    audio.currentTime = 0;
-    playing = false;
-  }
-}
+document.addEventListener('click', () => {
+  if (audio.paused) audio.play();
+}, { once: true });
 </script>
 
 </body>
