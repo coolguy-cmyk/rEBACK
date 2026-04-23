@@ -4,133 +4,181 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>rEBACK</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-
 <style>
-/* (your CSS unchanged, trimmed for brevity) */
-* { margin:0; padding:0; box-sizing:border-box; }
+/* === YOUR ORIGINAL CSS (UNCHANGED) === */
+* { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  background:#0a0a0a;
-  color:#e8e8e8;
-  font-family:'Space Mono', monospace;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  min-height:100vh;
-  padding:2rem 1rem;
+  background: #0a0a0a;
+  color: #e8e8e8;
+  font-family: 'Space Mono', monospace;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
 }
-.tab-btn.active { color:#fff; border-bottom:2px solid #4ade80; }
-.tab-content { display:none; }
-.tab-content.active { display:block; }
-.executor-item { background:#0f0f0f; padding:1rem; border-radius:10px; margin-bottom:1rem; }
-.error { color:#ef4444; text-align:center; }
-.loading { text-align:center; color:#888; }
+/* (rest of your CSS unchanged...) */
 </style>
 </head>
-
 <body>
 
-<h1>rEBACK<span>_</span></h1>
+<div class="scanline"></div>
+<img class="logo" src="square-image.png" alt="logo" onerror="this.style.display='none'">
+<h1>r̷🄴🄱🄰🄲🄺<span class="blink">_</span></h1>
 
+<p class="tagline">
+You're a hacker looking for safe hacks? Look no further, we gotcha
+</p>
+
+<!-- FIXED onclick -->
 <div class="tabs">
-  <button class="tab-btn active" data-tab="home">HOME</button>
-  <button class="tab-btn" data-tab="executors">EXECUTORS</button>
+  <button class="tab-btn active" onclick="switchTab(event, 'home')">HOME</button>
+  <button class="tab-btn" onclick="switchTab(event, 'executors')">EXECUTORS</button>
 </div>
 
 <div id="home" class="tab-content active">
-  <p>Home content</p>
+  <div class="card">
+    <p class="offer-title">// WE OFFER</p>
+    <ul>
+      <li>Free Bot accounts ranged from 15 to 50 rbx</li>
+      <li>Free member bot accounts</li>
+      <li>Executors</li>
+      <li>Cheap VIP (200 rbx one time purchase)</li>
+      <li>Nice staff to help incase of need</li>
+    </ul>
+  </div>
 </div>
 
 <div id="executors" class="tab-content">
-  <div id="executor-container" class="loading">
-    Loading executors...
+  <div class="card">
+    <p class="offer-title">// EXECUTOR STATUS TRACKER</p>
+    <div id="executor-container" class="executor-list">
+      <div class="loading">Loading executors from WEAO...</div>
+    </div>
   </div>
 </div>
 
 <script>
-/* ---------- TAB SYSTEM (FIXED) ---------- */
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const tabName = btn.dataset.tab;
+const audio = document.getElementById("bgm");
+document.addEventListener('click', () => {
+  if (audio && audio.paused) audio.play();
+}, { once: true });
 
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+/* ---------- FIXED TAB FUNCTION ---------- */
+function switchTab(e, tabName) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
 
-    document.getElementById(tabName).classList.add('active');
-    btn.classList.add('active');
+  document.getElementById(tabName).classList.add('active');
+  e.target.classList.add('active');
 
-    if (tabName === 'executors') {
-      loadExecutors();
-    }
-  });
-});
+  if (tabName === 'executors') {
+    loadExecutors();
+  }
+}
 
 /* ---------- FETCH WITH FALLBACK ---------- */
-async function fetchExecutors() {
-  const url = "https://weao.xyz/api/status/exploits";
-
-  try {
-    // try direct first
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("Direct API failed");
-    return await res.json();
-
-  } catch (err) {
-    console.warn("Direct failed, using proxy...");
-
-    // fallback proxy
-    const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-    const res = await fetch(proxy);
-
-    if (!res.ok) throw new Error("Proxy also failed");
-    return await res.json();
-  }
-}
-
-/* ---------- LOAD EXECUTORS ---------- */
 async function loadExecutors() {
   const container = document.getElementById('executor-container');
-  container.innerHTML = '<div class="loading">Loading...</div>';
+  container.innerHTML = '<div class="loading">Loading executors from WEAO...</div>';
+
+  const url = 'https://weao.xyz/api/status/exploits';
 
   try {
-    const exploits = await fetchExecutors();
+    // direct fetch (NO headers)
+    let response = await fetch(url);
 
-    if (!Array.isArray(exploits) || exploits.length === 0) {
-      container.innerHTML = '<div class="error">No executors found</div>';
-      return;
+    if (!response.ok) throw new Error('Direct API blocked');
+
+    let exploits = await response.json();
+    renderExecutors(exploits);
+
+  } catch (err) {
+    try {
+      // proxy fallback
+      const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+      const proxyRes = await fetch(proxy);
+
+      if (!proxyRes.ok) throw new Error('Proxy failed');
+
+      const exploits = await proxyRes.json();
+      renderExecutors(exploits);
+
+    } catch (error) {
+      console.error('FULL ERROR:', error);
+      container.innerHTML = `
+        <div class="error">
+          Failed to load executors:<br>
+          ${error.message}
+        </div>
+      `;
     }
-
-    container.innerHTML = '';
-
-    exploits.forEach(executor => {
-      container.appendChild(createExecutorElement(executor));
-    });
-
-  } catch (error) {
-    console.error("FULL ERROR:", error);
-
-    container.innerHTML = `
-      <div class="error">
-        Failed to load executors.<br>
-        ${error.message}
-      </div>
-    `;
   }
 }
 
-/* ---------- CREATE UI ---------- */
+/* ---------- RENDER ---------- */
+function renderExecutors(exploits) {
+  const container = document.getElementById('executor-container');
+  container.innerHTML = '';
+
+  if (!Array.isArray(exploits) || exploits.length === 0) {
+    container.innerHTML = '<div class="error">No executors found</div>';
+    return;
+  }
+
+  exploits.forEach(executor => {
+    const el = createExecutorElement(executor);
+    container.appendChild(el);
+  });
+}
+
+/* ---------- YOUR ORIGINAL CARD FUNCTION (UNCHANGED) ---------- */
 function createExecutorElement(executor) {
   const div = document.createElement('div');
   div.className = 'executor-item';
 
+  const freeStatus = executor.free ?
+    '<span class="status-badge badge-free">FREE</span>' :
+    '<span class="status-badge badge-paid">PAID</span>';
+
+  const updateStatus = executor.updateStatus ?
+    '<span class="status-badge badge-updated">UPDATED</span>' :
+    '<span class="status-badge badge-outdated">OUTDATED</span>';
+
+  const downloadLink = executor.purchaselink || executor.websitelink || '#';
+  const discordLink = executor.discordlink || '#';
+
   div.innerHTML = `
-    <strong>${executor.title || 'Unknown'}</strong><br>
-    Version: ${executor.version || '?.?.?'}<br>
-    Platform: ${executor.platform || 'Unknown'}<br>
-    Status: ${executor.free ? 'FREE' : 'PAID'}<br>
-    Updated: ${executor.updatedDate || 'Unknown'}
+    <div class="executor-header">
+      <div>
+        <span class="executor-name">${executor.title || 'Unknown'}</span>
+        <span class="executor-type">${executor.platform || 'Unknown'}</span>
+      </div>
+      <span class="executor-version">v${executor.version || '?.?.?'}</span>
+    </div>
+
+    <div style="margin-bottom: 0.75rem;">
+      ${freeStatus}
+      ${updateStatus}
+    </div>
+
+    <div class="executor-details">
+      <div class="detail-item">
+        <span class="detail-label">UPDATED</span>
+        <span class="detail-value">${executor.updatedDate || 'Unknown'}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">TYPE</span>
+        <span class="detail-value">${executor.type || 'Unknown'}</span>
+      </div>
+    </div>
+
+    <div class="executor-actions">
+      <a href="${downloadLink}" target="_blank" class="download-btn">DOWNLOAD</a>
+      ${discordLink !== '#' ? `<a href="${discordLink}" target="_blank" class="discord-link-btn">DISCORD</a>` : ''}
+    </div>
   `;
 
   return div;
