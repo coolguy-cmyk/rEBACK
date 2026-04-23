@@ -4,12 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>rEBACK</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 body {
   background: #0a0a0a;
   color: #e8e8e8;
@@ -21,7 +18,6 @@ body {
   justify-content: center;
   padding: 2rem 1rem;
 }
-
 .logo {
   width: 100px;
   height: 100px;
@@ -30,7 +26,6 @@ body {
   border: 2px solid #333;
   margin-bottom: 1rem;
 }
-
 @keyframes shake {
   0%,89%,100% { transform: none; }
   90% { transform: translateX(-2px) skewX(1deg); }
@@ -38,7 +33,6 @@ body {
   92% { transform: translateX(-1px) skewX(-1deg); }
   93% { transform: none; }
 }
-
 h1 {
   font-family: 'Share Tech Mono', monospace;
   font-size: 2rem;
@@ -48,7 +42,6 @@ h1 {
   margin-bottom: 0.5rem;
   text-align: center;
 }
-
 .scanline {
   position: fixed;
   top: 0; left: 0;
@@ -63,51 +56,235 @@ h1 {
   pointer-events: none;
   z-index: 999;
 }
-
 .tagline {
   color: #888;
   font-size: 0.78rem;
   margin-bottom: 1.5rem;
   text-align: center;
 }
-
+.tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #2a2a2a;
+}
+.tab-btn {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  color: #888;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.85rem;
+  cursor: pointer;
+  letter-spacing: 0.1em;
+  border-bottom: 2px solid transparent;
+  transition: 0.2s;
+}
+.tab-btn.active {
+  color: #fff;
+  border-bottom-color: #4ade80;
+}
+.tab-btn:hover {
+  color: #ccc;
+}
+.tab-content {
+  display: none;
+}
+.tab-content.active {
+  display: block;
+}
 .card {
   background: #141414;
   border: 0.5px solid #2a2a2a;
   border-radius: 14px;
   padding: 1.5rem;
-  max-width: 420px;
+  max-width: 620px;
   width: 100%;
   margin-bottom: 1.5rem;
 }
-
 .offer-title {
   font-size: 0.7rem;
   color: #555;
   letter-spacing: 0.15em;
   margin-bottom: 0.75rem;
 }
-
 ul { list-style: none; }
-
 ul li {
   font-size: 0.78rem;
   color: #aaa;
   padding: 5px 0;
   border-bottom: 0.5px solid #1e1e1e;
 }
-
 ul li:last-child { border-bottom: none; }
-
 ul li::before {
   content: '> ';
   color: #4ade80;
 }
-
+.executor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.executor-item {
+  background: #0f0f0f;
+  border: 0.5px solid #1e1e1e;
+  border-radius: 10px;
+  padding: 1.2rem;
+  transition: 0.2s;
+}
+.executor-item:hover {
+  border-color: #333;
+  background: #121212;
+}
+.executor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+.executor-name {
+  font-size: 0.95rem;
+  color: #fff;
+  font-weight: 700;
+}
+.executor-version {
+  font-size: 0.7rem;
+  color: #666;
+}
+.executor-type {
+  font-size: 0.65rem;
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-left: 0.5rem;
+}
+.executor-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.7rem;
+}
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.detail-label {
+  color: #666;
+  letter-spacing: 0.05em;
+}
+.detail-value {
+  color: #aaa;
+}
+.status-free {
+  color: #4ade80;
+}
+.status-paid {
+  color: #f97316;
+}
+.status-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  margin-right: 0.5rem;
+}
+.badge-free {
+  background: rgba(74, 222, 128, 0.2);
+  color: #4ade80;
+}
+.badge-paid {
+  background: rgba(249, 115, 22, 0.2);
+  color: #f97316;
+}
+.badge-updated {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+}
+.badge-outdated {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+.detection-notice {
+  background: rgba(249, 115, 22, 0.1);
+  border: 0.5px solid rgba(249, 115, 22, 0.3);
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.7rem;
+  color: #f97316;
+}
+.detection-notice a {
+  color: #fbbf24;
+  text-decoration: underline;
+}
+.executor-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+.download-btn {
+  flex: 1;
+  padding: 0.7rem;
+  background: #4ade80;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.download-btn:hover {
+  background: #22c55e;
+  transform: scale(1.02);
+}
+.discord-link-btn {
+  flex: 1;
+  padding: 0.7rem;
+  background: #5865f2;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.discord-link-btn:hover {
+  background: #4752c4;
+  transform: scale(1.02);
+}
+.loading {
+  text-align: center;
+  color: #888;
+  font-size: 0.85rem;
+}
+.error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 0.5px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  color: #ef4444;
+  font-size: 0.8rem;
+  text-align: center;
+}
 .join-btn {
   display: block;
   width: 100%;
-  max-width: 420px;
+  max-width: 620px;
   padding: 1rem;
   background: #fff;
   color: #000;
@@ -123,73 +300,211 @@ ul li::before {
   transition: 0.15s;
   margin-top: 1rem;
 }
-
 .join-btn:hover {
   background: #e0e0e0;
   transform: scale(1.02);
 }
-
 .discord {
   font-size: 0.72rem;
   color: #555;
   margin-top: 1rem;
   text-align: center;
 }
-
 .blink {
   animation: blink 1.2s step-end infinite;
 }
-
 @keyframes blink {
   50% { opacity: 0; }
 }
 </style>
 </head>
-
 <body>
-
 <div class="scanline"></div>
-
 <img class="logo" src="square-image.png" alt="logo" onerror="this.style.display='none'">
-
 <h1>r̷🄴🄱🄰🄲🄺<span class="blink">_</span></h1>
-
 <p class="tagline">
 You're a hacker looking for safe hacks? Look no further, we gotcha
 </p>
 
-<div class="card">
-  <p class="offer-title">// WE OFFER</p>
-  <ul>
-    <li>Free Bot accounts ranged from 15 to 50 rbx</li>
-    <li>Free member bot accounts</li>
-    <li>Executors</li>
-    <li>Cheap VIP (200 rbx one time purchase)</li>
-    <li>Nice staff to help incase of need</li>
-  </ul>
+<!-- TAB NAVIGATION -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('home')">HOME</button>
+  <button class="tab-btn" onclick="switchTab('executors')">EXECUTORS</button>
 </div>
 
-<p class="tagline">Now we can hack</p>
+<!-- HOME TAB -->
+<div id="home" class="tab-content active">
+  <div class="card">
+    <p class="offer-title">// WE OFFER</p>
+    <ul>
+      <li>Free Bot accounts ranged from 15 to 50 rbx</li>
+      <li>Free member bot accounts</li>
+      <li>Executors</li>
+      <li>Cheap VIP (200 rbx one time purchase)</li>
+      <li>Nice staff to help incase of need</li>
+    </ul>
+  </div>
+  <p class="tagline">Now we can hack</p>
+  <a class="join-btn" href="https://discord.gg/avmFxwSG7M" target="_blank">
+    Join now
+  </a>
+</div>
 
-<a class="join-btn" href="https://discord.gg/avmFxwSG7M" target="_blank">
-  Join now
-</a>
+<!-- EXECUTORS TAB -->
+<div id="executors" class="tab-content">
+  <div class="card">
+    <p class="offer-title">// EXECUTOR STATUS TRACKER</p>
+    <div id="executor-container" class="executor-list">
+      <div class="loading">Loading executors from WEAO...</div>
+    </div>
+  </div>
+</div>
+
+<p class="discord">
+discord.gg/<a href="https://discord.gg/avmFxwSG7M" target="_blank">avmFxwSG7M</a>
+</p>
 
 <!-- hidden audio with autoplay -->
 <audio id="bgm" loop autoplay>
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
-<p class="discord">
-discord.gg/<a href="https://discord.gg/avmFxwSG7M" target="_blank">avmFxwSG7M</a>
-</p>
-
 <script>
 const audio = document.getElementById("bgm");
 document.addEventListener('click', () => {
   if (audio.paused) audio.play();
 }, { once: true });
-</script>
 
+function switchTab(tabName) {
+  // Hide all tabs
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  
+  // Show selected tab
+  document.getElementById(tabName).classList.add('active');
+  event.target.classList.add('active');
+  
+  // Load executors if switching to executors tab
+  if (tabName === 'executors') {
+    loadExecutors();
+  }
+}
+
+async function loadExecutors() {
+  const container = document.getElementById('executor-container');
+  
+  try {
+    const response = await fetch('https://weao.xyz/api/status/exploits', {
+      headers: {
+        'User-Agent': 'WEAO-3PService'
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
+    }
+    
+    const exploits = await response.json();
+    
+    if (!Array.isArray(exploits)) {
+      throw new Error('Invalid API response format');
+    }
+    
+    container.innerHTML = '';
+    
+    if (exploits.length === 0) {
+      container.innerHTML = '<div class="error">No executors found</div>';
+      return;
+    }
+    
+    exploits.forEach(executor => {
+      const executorEl = createExecutorElement(executor);
+      container.appendChild(executorEl);
+    });
+    
+  } catch (error) {
+    container.innerHTML = `<div class="error">Failed to load executors: ${error.message}. Please try again later.</div>`;
+    console.error('Error loading executors:', error);
+  }
+}
+
+function createExecutorElement(executor) {
+  const div = document.createElement('div');
+  div.className = 'executor-item';
+  
+  // Determine status badges
+  const freeStatus = executor.free ? 
+    '<span class="status-badge badge-free">FREE</span>' : 
+    '<span class="status-badge badge-paid">PAID</span>';
+  
+  const updateStatus = executor.updateStatus ? 
+    '<span class="status-badge badge-updated">UPDATED</span>' : 
+    '<span class="status-badge badge-outdated">OUTDATED</span>';
+  
+  // Detection status handling
+  let detectionHTML = '';
+  if (executor.detected !== undefined && executor.detected !== null) {
+    const detectedStatus = executor.detected ? 
+      '<span class="status-badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444;">DETECTED</span>' : 
+      '<span class="status-badge" style="background: rgba(74, 222, 128, 0.2); color: #4ade80;">NOT DETECTED</span>';
+    detectionHTML = detectedStatus;
+  } else {
+    detectionHTML = `
+      <div class="detection-notice">
+        ⚠ We cannot detect if this executor is detected. If you want to see if it's detected go to: 
+        <a href="https://weao.gg" target="_blank">https://weao.gg</a>
+      </div>
+    `;
+  }
+  
+  // Get download link (prioritize purchaselink, then websitelink)
+  const downloadLink = executor.purchaselink || executor.websitelink || '#';
+  
+  // Get Discord link
+  const discordLink = executor.discordlink || '#';
+  
+  div.innerHTML = `
+    <div class="executor-header">
+      <div>
+        <span class="executor-name">${executor.title || 'Unknown'}</span>
+        <span class="executor-type">${executor.platform || 'Unknown'}</span>
+      </div>
+      <span class="executor-version">v${executor.version || '?.?.?'}</span>
+    </div>
+    
+    <div style="margin-bottom: 0.75rem;">
+      ${freeStatus}
+      ${updateStatus}
+      ${detectionHTML}
+    </div>
+    
+    <div class="executor-details">
+      <div class="detail-item">
+        <span class="detail-label">UPDATED</span>
+        <span class="detail-value">${executor.updatedDate || 'Unknown'}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">TYPE</span>
+        <span class="detail-value">${executor.extype || executor.type || 'Unknown'}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">COST</span>
+        <span class="detail-value">${executor.cost || (executor.free ? 'Free' : 'Check site')}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">UNC SCORE</span>
+        <span class="detail-value">${executor.uncPercentage || 'N/A'}%</span>
+      </div>
+    </div>
+    
+    <div class="executor-actions">
+      <a href="${downloadLink}" target="_blank" class="download-btn">DOWNLOAD</a>
+      ${discordLink !== '#' ? `<a href="${discordLink}" target="_blank" class="discord-link-btn">DISCORD</a>` : ''}
+    </div>
+  `;
+  
+  return div;
+}
+</script>
 </body>
 </html>
