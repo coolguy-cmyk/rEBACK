@@ -143,6 +143,108 @@ ul li::before {
 @keyframes blink {
   50% { opacity: 0; }
 }
+
+/* ── Tab nav ── */
+.tab-nav {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  max-width: 420px;
+  width: 100%;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  background: #141414;
+  border: 0.5px solid #2a2a2a;
+  border-radius: 8px;
+  color: #555;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.tab-btn:hover { color: #aaa; border-color: #444; }
+.tab-btn.active { color: #4ade80; border-color: #4ade80; }
+
+.tab-content { display: none; width: 100%; max-width: 420px; }
+.tab-content.active { display: block; }
+
+/* ── Status tab ── */
+.status-search {
+  width: 100%;
+  background: #141414;
+  border: 0.5px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  color: #e8e8e8;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  margin-bottom: 1rem;
+  outline: none;
+  transition: 0.15s;
+}
+
+.status-search:focus { border-color: #444; }
+.status-search::placeholder { color: #444; }
+
+.exploit-card {
+  background: #141414;
+  border: 0.5px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.exploit-name {
+  font-size: 0.78rem;
+  color: #e8e8e8;
+  font-weight: 700;
+}
+
+.exploit-meta {
+  font-size: 0.65rem;
+  color: #555;
+  margin-top: 2px;
+}
+
+.exploit-badge {
+  font-size: 0.65rem;
+  padding: 3px 9px;
+  border-radius: 99px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.badge-up      { background: #14291a; color: #4ade80; }
+.badge-down    { background: #2a1414; color: #f87171; }
+.badge-issues  { background: #2a1e0a; color: #fb923c; }
+
+.status-loading {
+  font-size: 0.72rem;
+  color: #444;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.detection-notice {
+  font-size: 0.65rem;
+  color: #555;
+  text-align: center;
+  margin-top: 0.75rem;
+  line-height: 1.6;
+}
+
+.detection-notice a { color: #4ade80; text-decoration: none; }
+.detection-notice a:hover { text-decoration: underline; }
 </style>
 </head>
 
@@ -158,24 +260,44 @@ ul li::before {
 You're a hacker looking for safe hacks? Look no further, we gotcha
 </p>
 
-<div class="card">
-  <p class="offer-title">// WE OFFER</p>
-  <ul>
-    <li>Free Bot accounts ranged from 15 to 50 rbx</li>
-    <li>Free member bot accounts</li>
-    <li>Executors</li>
-    <li>Cheap VIP (200 rbx one time purchase)</li>
-    <li>Nice staff to help incase of need</li>
-  </ul>
+<!-- Tab nav -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('home')">// HOME</button>
+  <button class="tab-btn" onclick="switchTab('status')">// EXECUTOR STATUS</button>
 </div>
 
-<p class="tagline">Now we can hack</p>
+<!-- HOME tab -->
+<div id="tab-home" class="tab-content active">
+  <div class="card">
+    <p class="offer-title">// WE OFFER</p>
+    <ul>
+      <li>Free Bot accounts ranged from 15 to 50 rbx</li>
+      <li>Free member bot accounts</li>
+      <li>Executors</li>
+      <li>Cheap VIP (200 rbx one time purchase)</li>
+      <li>Nice staff to help incase of need</li>
+    </ul>
+  </div>
 
-<a class="join-btn" href="https://discord.gg/avmFxwSG7M" target="_blank">
-  Join now
-</a>
+  <p class="tagline">Now we can hack</p>
 
-<!-- hidden audio with autoplay -->
+  <a class="join-btn" href="https://discord.gg/avmFxwSG7M" target="_blank">
+    Join now
+  </a>
+</div>
+
+<!-- STATUS tab -->
+<div id="tab-status" class="tab-content">
+  <input class="status-search" type="text" placeholder="> search executor..." oninput="filterExploits(this.value)" />
+  <div id="exploit-list"><p class="status-loading">// loading executors...</p></div>
+  <p class="detection-notice">
+    Sadly we can't detect detection statuses, therefore we ask you to visit
+    <a href="https://weao.xyz" target="_blank">weao.xyz</a>
+    if you want to see if an executor is detected.
+  </p>
+</div>
+
+<!-- audio -->
 <audio id="bgm" loop autoplay>
   <source src="music.mp3" type="audio/mpeg">
 </audio>
@@ -189,6 +311,68 @@ const audio = document.getElementById("bgm");
 document.addEventListener('click', () => {
   if (audio.paused) audio.play();
 }, { once: true });
+
+// ── Tab switching
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+  if (name === 'status' && !window._exploitsLoaded) loadExploits();
+}
+
+// ── Fetch & render exploits
+let allExploits = [];
+
+async function loadExploits() {
+  window._exploitsLoaded = true;
+  try {
+    const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://weao.xyz/api/status/exploits'));
+    console.log('Status:', res.status);
+    const text = await res.text();
+    console.log('Raw response:', text.slice(0, 500));
+    const json = JSON.parse(text);
+    console.log('WEAO API response:', JSON.stringify(json).slice(0, 500));
+    const list = Array.isArray(json) ? json : json.exploits || Object.values(json);
+    allExploits = list.filter(e =>
+      e && e.title && !e.hidden &&
+      !(e.extype && e.extype.toLowerCase().includes('external')) &&
+      !['xeno','solara'].includes(e.title.toLowerCase())
+    );
+    renderExploits(allExploits);
+  } catch(e) {
+    console.error('Fetch error:', e);
+    document.getElementById('exploit-list').innerHTML =
+      '<p class="status-loading">// failed to load — try weao.xyz directly</p>';
+  }
+}
+
+function getStatus(e) {
+  if (e.issues || e.hasIssues) return { emoji: '🟠', label: 'Issues', cls: 'badge-issues' };
+  if (!e.updateStatus)         return { emoji: '🔴', label: 'Not updated', cls: 'badge-down' };
+  return                              { emoji: '🟢', label: 'Updated', cls: 'badge-up' };
+}
+
+function renderExploits(list) {
+  const el = document.getElementById('exploit-list');
+  if (!list.length) { el.innerHTML = '<p class="status-loading">// no results</p>'; return; }
+  el.innerHTML = list.map(e => {
+    const { emoji, label, cls } = getStatus(e);
+    const meta = [e.platform, e.version ? 'v' + e.version : null].filter(Boolean).join(' · ');
+    return `<div class="exploit-card">
+      <div>
+        <div class="exploit-name">${e.title}</div>
+        ${meta ? `<div class="exploit-meta">${meta}</div>` : ''}
+      </div>
+      <span class="exploit-badge ${cls}">${emoji} ${label}</span>
+    </div>`;
+  }).join('');
+}
+
+function filterExploits(q) {
+  const filtered = allExploits.filter(e => e.title.toLowerCase().includes(q.toLowerCase()));
+  renderExploits(filtered);
+}
 </script>
 
 </body>
