@@ -218,25 +218,16 @@ ul li::before {
 }
 
 .exploit-links {
-  display: grid;
-  grid-template-rows: 0fr;
-  overflow: hidden;
-  transition: grid-template-rows 0.25s ease, margin-top 0.25s ease, padding-top 0.25s ease;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-top: 0;
-  padding-top: 0;
-  border-top: 0.5px solid transparent;
-}
-
-.exploit-links > * { min-height: 0; }
-
-.exploit-card.open .exploit-links {
-  grid-template-rows: 1fr;
+  display: none;
   margin-top: 0.75rem;
   padding-top: 0.75rem;
   border-top: 0.5px solid #1e1e1e;
-  display: grid;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.exploit-card.open .exploit-links {
+  display: flex;
 }
 
 .exploit-link-btn {
