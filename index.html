@@ -451,7 +451,42 @@ function renderExploits(list) {
 }
 
 function toggleCard(el) {
-  el.classList.toggle('open');
+  const links = el.querySelector('.exploit-links');
+  if (el.classList.contains('open')) {
+    // Collapse
+    links.style.height = links.scrollHeight + 'px';
+    requestAnimationFrame(() => {
+      links.style.transition = 'height 0.25s ease, opacity 0.25s ease, margin-top 0.25s ease, padding-top 0.25s ease';
+      links.style.height = '0';
+      links.style.opacity = '0';
+      links.style.marginTop = '0';
+      links.style.paddingTop = '0';
+    });
+    links.addEventListener('transitionend', () => {
+      el.classList.remove('open');
+      links.style = '';
+    }, { once: true });
+  } else {
+    // Expand
+    el.classList.add('open');
+    const h = links.scrollHeight;
+    links.style.height = '0';
+    links.style.opacity = '0';
+    links.style.overflow = 'hidden';
+    links.style.marginTop = '0';
+    links.style.paddingTop = '0';
+    requestAnimationFrame(() => {
+      links.style.transition = 'height 0.25s ease, opacity 0.25s ease, margin-top 0.25s ease, padding-top 0.25s ease';
+      links.style.height = h + 'px';
+      links.style.opacity = '1';
+      links.style.marginTop = '0.75rem';
+      links.style.paddingTop = '0.75rem';
+    });
+    links.addEventListener('transitionend', () => {
+      links.style.height = 'auto';
+      links.style.overflow = '';
+    }, { once: true });
+  }
 }
 
 function filterExploits(q) {
