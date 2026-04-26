@@ -197,11 +197,44 @@ ul li::before {
   border-radius: 10px;
   padding: 0.85rem 1rem;
   margin-bottom: 0.6rem;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.exploit-card:hover { border-color: #444; }
+.exploit-card.open { border-color: #4ade80; }
+
+.exploit-card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
 }
+
+.exploit-links {
+  display: none;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 0.5px solid #1e1e1e;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.exploit-card.open .exploit-links { display: flex; }
+
+.exploit-link-btn {
+  font-size: 0.65rem;
+  padding: 5px 12px;
+  border-radius: 8px;
+  border: 0.5px solid #2a2a2a;
+  background: #1a1a1a;
+  color: #aaa;
+  text-decoration: none;
+  font-family: 'Space Mono', monospace;
+  transition: 0.15s;
+}
+
+.exploit-link-btn:hover { border-color: #4ade80; color: #4ade80; }
 
 .exploit-name {
   font-size: 0.78rem;
@@ -263,7 +296,7 @@ You're a hacker looking for safe hacks? Look no further, we gotcha
 <!-- Tab nav -->
 <div class="tab-nav">
   <button class="tab-btn active" onclick="switchTab('home')">// HOME</button>
-  <button class="tab-btn" onclick="switchTab('status')">// EXECUTOR STATUS</button>
+  <button class="tab-btn" onclick="switchTab('status')">// EXECUTORS</button>
 </div>
 
 <!-- HOME tab -->
@@ -353,20 +386,56 @@ function getStatus(e) {
   return                              { emoji: '🟢', label: 'Updated', cls: 'badge-up' };
 }
 
+function sortBySunc(list) {
+  return list.sort((a, b) => (b.suncPercentage || 0) - (a.suncPercentage || 0));
+}
+
 function renderExploits(list) {
   const el = document.getElementById('exploit-list');
   if (!list.length) { el.innerHTML = '<p class="status-loading">// no results</p>'; return; }
-  el.innerHTML = list.map(e => {
-    const { emoji, label, cls } = getStatus(e);
-    const meta = [e.platform, e.version ? 'v' + e.version : null].filter(Boolean).join(' · ');
-    return `<div class="exploit-card">
-      <div>
-        <div class="exploit-name">${e.title}</div>
-        ${meta ? `<div class="exploit-meta">${meta}</div>` : ''}
-      </div>
-      <span class="exploit-badge ${cls}">${emoji} ${label}</span>
-    </div>`;
+
+  const platformOrder = ['Windows', 'Android', 'MacOS', 'iOS'];
+  const groups = {};
+
+  for (const e of list) {
+    const p = e.platform || 'Other';
+    if (!groups[p]) groups[p] = [];
+    groups[p].push(e);
+  }
+
+  // Sort each group by sUNC %
+  for (const p in groups) sortBySunc(groups[p]);
+
+  // Render in platform order
+  const platforms = [...platformOrder.filter(p => groups[p]), ...Object.keys(groups).filter(p => !platformOrder.includes(p))];
+
+  el.innerHTML = platforms.map(platform => {
+    const items = groups[platform];
+    return `<p class="offer-title" style="margin:1rem 0 0.5rem;">// ${platform.toUpperCase()}</p>` +
+      items.map(e => {
+        const { emoji, label, cls } = getStatus(e);
+        const sunc = e.suncPercentage !== undefined ? `sUNC ${e.suncPercentage}%` : null;
+        const meta = [e.version ? 'v' + e.version : null, sunc].filter(Boolean).join(' · ');
+        return `<div class="exploit-card" onclick="toggleCard(this)">
+          <div class="exploit-card-top">
+            <div>
+              <div class="exploit-name">${e.title}</div>
+              ${meta ? `<div class="exploit-meta">${meta}</div>` : ''}
+            </div>
+            <span class="exploit-badge ${cls}">${emoji} ${label}</span>
+          </div>
+          <div class="exploit-links">
+            ${e.websitelink ? `<a class="exploit-link-btn" href="${e.websitelink}" target="_blank" onclick="event.stopPropagation()">🌐 Website</a>` : ''}
+            ${e.discordlink ? `<a class="exploit-link-btn" href="${e.discordlink}" target="_blank" onclick="event.stopPropagation()">💬 Discord</a>` : ''}
+            ${e.purchaselink && !e.free ? `<a class="exploit-link-btn" href="${e.purchaselink}" target="_blank" onclick="event.stopPropagation()">🛒 Purchase</a>` : ''}
+          </div>
+        </div>`;
+      }).join('');
   }).join('');
+}
+
+function toggleCard(el) {
+  el.classList.toggle('open');
 }
 
 function filterExploits(q) {
