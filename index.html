@@ -327,7 +327,7 @@ let allExploits = [];
 async function loadExploits() {
   window._exploitsLoaded = true;
   try {
-    const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://weao.xyz/api/status/exploits'));
+    const res = await fetch('https://thingproxy.freeboard.io/fetch/https://weao.xyz/api/status/exploits', { headers: { 'User-Agent': 'WEAO-3PService' } });
     console.log('Status:', res.status);
     const text = await res.text();
     console.log('Raw response:', text.slice(0, 500));
