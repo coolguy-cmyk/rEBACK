@@ -198,7 +198,13 @@ ul li::before {
   padding: 0.85rem 1rem;
   margin-bottom: 0.6rem;
   cursor: pointer;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, transform 0.15s;
+  animation: cardIn 0.3s ease both;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .exploit-card:hover { border-color: #444; }
@@ -212,15 +218,26 @@ ul li::before {
 }
 
 .exploit-links {
-  display: none;
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows 0.25s ease, margin-top 0.25s ease, padding-top 0.25s ease;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0.5px solid transparent;
+}
+
+.exploit-links > * { min-height: 0; }
+
+.exploit-card.open .exploit-links {
+  grid-template-rows: 1fr;
   margin-top: 0.75rem;
   padding-top: 0.75rem;
   border-top: 0.5px solid #1e1e1e;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  display: grid;
 }
-
-.exploit-card.open .exploit-links { display: flex; }
 
 .exploit-link-btn {
   font-size: 0.65rem;
@@ -414,6 +431,7 @@ function renderExploits(list) {
   // Render in platform order
   const platforms = [...platformOrder.filter(p => groups[p]), ...Object.keys(groups).filter(p => !platformOrder.includes(p))];
 
+  let cardIndex = 0;
   el.innerHTML = platforms.map(platform => {
     const items = groups[platform];
     return `<p class="offer-title" style="margin:1rem 0 0.5rem;">// ${platform.toUpperCase()}</p>` +
@@ -422,7 +440,8 @@ function renderExploits(list) {
         const sunc = e.suncPercentage !== undefined ? `sUNC ${e.suncPercentage}%` : null;
         const unc = e.uncPercentage !== undefined ? `UNC ${e.uncPercentage}%` : null;
         const meta = [e.version ? 'v' + e.version : null, sunc, unc].filter(Boolean).join(' · ');
-        return `<div class="exploit-card" onclick="toggleCard(this)">
+        const delay = (cardIndex++ * 40);
+        return `<div class="exploit-card" onclick="toggleCard(this)" style="animation-delay:${delay}ms">
           <div class="exploit-card-top">
             <div>
               <div class="exploit-name">${e.title}</div>
