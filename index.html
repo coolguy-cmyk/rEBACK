@@ -387,7 +387,12 @@ function getStatus(e) {
 }
 
 function sortBySunc(list) {
-  return list.sort((a, b) => (b.suncPercentage || 0) - (a.suncPercentage || 0));
+  return list.sort((a, b) => {
+    // Updated first
+    if (a.updateStatus !== b.updateStatus) return b.updateStatus ? 1 : -1;
+    // Then by sUNC % descending
+    return (b.suncPercentage || 0) - (a.suncPercentage || 0);
+  });
 }
 
 function renderExploits(list) {
@@ -415,7 +420,8 @@ function renderExploits(list) {
       items.map(e => {
         const { emoji, label, cls } = getStatus(e);
         const sunc = e.suncPercentage !== undefined ? `sUNC ${e.suncPercentage}%` : null;
-        const meta = [e.version ? 'v' + e.version : null, sunc].filter(Boolean).join(' · ');
+        const unc = e.uncPercentage !== undefined ? `UNC ${e.uncPercentage}%` : null;
+        const meta = [e.version ? 'v' + e.version : null, sunc, unc].filter(Boolean).join(' · ');
         return `<div class="exploit-card" onclick="toggleCard(this)">
           <div class="exploit-card-top">
             <div>
