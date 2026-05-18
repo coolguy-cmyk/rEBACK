@@ -381,7 +381,7 @@ async function loadExploits() {
     allExploits = list.filter(e =>
       e && e.title && !e.hidden &&
       !(e.extype && e.extype.toLowerCase().includes('external')) &&
-      !['',''].includes(e.title.toLowerCase())
+      !['xeno','solara'].includes(e.title.toLowerCase())
     );
     renderExploits(allExploits);
   } catch(e) {
